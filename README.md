@@ -58,7 +58,7 @@ src/
 
 | Bloque | Contenido | Estado |
 |--------|-----------|--------|
-| 0 | Repo, scaffold, README base | ✅ En curso |
+| 0 | Repo, scaffold, README base | ✅ Hecho |
 | 1 | Mock API + listado (tabla/cards, estados, paginación) | Pendiente |
 | 2 | Filtros + query params en URL | Pendiente |
 | 3 | Formulario de creación | Pendiente |
@@ -79,4 +79,4 @@ Nada aún — proyecto recién inicializado.
 
 ## Autor
 
-Prueba técnica individual — [tu nombre / usuario GitHub].
+Prueba técnica individual — [JheysonHerreraTISSINI](https://github.com/JheysonHerreraTISSINI).
