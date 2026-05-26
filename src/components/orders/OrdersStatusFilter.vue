@@ -1,15 +1,9 @@
 <script setup lang="ts">
+import { statusOptions } from '@/constants/order.constant'
 import type { StatusFilter } from '@/types/payment-order'
 
 const statusFilter = defineModel<StatusFilter>('statusFilter', { required: true })
 
-const statusOptions: { value: StatusFilter; label: string }[] = [
-  { value: 'todos', label: 'Todos' },
-  { value: 'BORRADOR', label: 'Borrador' },
-  { value: 'APROBADA', label: 'Aprobada' },
-  { value: 'RECHAZADA', label: 'Rechazada' },
-  { value: 'PAGADA', label: 'Pagada' },
-]
 </script>
 
 <template>
