@@ -58,9 +58,9 @@ watch(statusFilter, () => {
       variant="error"
       :title="error"
     >
-      <button type="button" class="orders-list__retry" @click="store.loadOrders()">
+      <el-button type="primary" @click="store.loadOrders()">
         Reintentar
-      </button>
+      </el-button>
     </ViewMessage>
 
     <ViewMessage
@@ -119,19 +119,6 @@ watch(statusFilter, () => {
 
 .orders-list__mobile {
   display: block;
-}
-
-.orders-list__retry {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background: #fff;
-  cursor: pointer;
-}
-
-.orders-list__retry:hover {
-  background: #f9fafb;
 }
 
 /* Tablet y desktop: tabla */

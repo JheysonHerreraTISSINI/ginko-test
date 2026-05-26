@@ -50,6 +50,6 @@ describe('OrdersListView', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('No pudimos cargar las órdenes')
-    expect(wrapper.find('.orders-list__retry').exists()).toBe(true)
+    expect(wrapper.find('.el-button').exists()).toBe(true)
   })
 })
