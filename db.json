@@ -1,0 +1,100 @@
+{
+  "ordenes": [
+    {
+      "id": "ord-001",
+      "proveedor": "Distribuidora Andina S.A.S.",
+      "monto": 2450000,
+      "concepto": "Pago factura marzo — insumos de oficina",
+      "fechaCreacion": "2026-05-20T10:30:00.000Z",
+      "estado": "APROBADA"
+    },
+    {
+      "id": "ord-002",
+      "proveedor": "Logística del Pacífico",
+      "monto": 890000,
+      "concepto": "Flete regional Bogotá–Cali",
+      "fechaCreacion": "2026-05-21T14:15:00.000Z",
+      "estado": "BORRADOR"
+    },
+    {
+      "id": "ord-003",
+      "proveedor": "Tecnología Empresarial Ltda.",
+      "monto": 5120000,
+      "concepto": "Licencias anuales plataforma ERP",
+      "fechaCreacion": "2026-05-18T09:00:00.000Z",
+      "estado": "PAGADA"
+    },
+    {
+      "id": "ord-004",
+      "proveedor": "Papelera Central",
+      "monto": 320500,
+      "concepto": "Material de empaque Q2",
+      "fechaCreacion": "2026-05-22T16:45:00.000Z",
+      "estado": "RECHAZADA"
+    },
+    {
+      "id": "ord-005",
+      "proveedor": "Servicios Legales Gómez & Asoc.",
+      "monto": 1800000,
+      "concepto": "Asesoría contractual proveedores",
+      "fechaCreacion": "2026-05-19T11:20:00.000Z",
+      "estado": "APROBADA"
+    },
+    {
+      "id": "ord-006",
+      "proveedor": "Energía Verde Colombia",
+      "monto": 975000,
+      "concepto": "Factura servicios públicos sede norte",
+      "fechaCreacion": "2026-05-23T08:10:00.000Z",
+      "estado": "BORRADOR"
+    },
+    {
+      "id": "ord-007",
+      "proveedor": "Café Exportadores del Huila",
+      "monto": 4300000,
+      "concepto": "Compra grano premium lote 14",
+      "fechaCreacion": "2026-05-17T13:00:00.000Z",
+      "estado": "PAGADA"
+    },
+    {
+      "id": "ord-008",
+      "proveedor": "Mantenimiento Industrial CRC",
+      "monto": 1560000,
+      "concepto": "Mantenimiento preventivo planta",
+      "fechaCreacion": "2026-05-24T15:30:00.000Z",
+      "estado": "BORRADOR"
+    },
+    {
+      "id": "ord-009",
+      "proveedor": "Marketing Digital 360",
+      "monto": 2200000,
+      "concepto": "Campaña redes sociales mayo",
+      "fechaCreacion": "2026-05-16T10:00:00.000Z",
+      "estado": "RECHAZADA"
+    },
+    {
+      "id": "ord-010",
+      "proveedor": "Seguros Empresariales S.A.",
+      "monto": 3100000,
+      "concepto": "Póliza responsabilidad civil anual",
+      "fechaCreacion": "2026-05-15T09:45:00.000Z",
+      "estado": "APROBADA"
+    },
+    {
+      "id": "ord-011",
+      "proveedor": "Transporte Rápido Nacional",
+      "monto": 675000,
+      "concepto": "Mensajería documentos tributarios",
+      "fechaCreacion": "2026-05-25T07:50:00.000Z",
+      "estado": "BORRADOR"
+    },
+    {
+      "id": "ord-012",
+      "proveedor": "Consultoría Financiera Delta",
+      "monto": 4800000,
+      "concepto": "Auditoría interna procesos de pago",
+      "fechaCreacion": "2026-05-14T12:00:00.000Z",
+      "estado": "PAGADA"
+    }
+  ]
+}

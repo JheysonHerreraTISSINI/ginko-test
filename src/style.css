@@ -18,6 +18,12 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+
+  /* Breakpoints de referencia: mobile <768px, tablet 768–1023px, desktop ≥1024px */
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+  --color-border: #e5e7eb;
+  --color-surface: #ffffff;
 }
 
 body {

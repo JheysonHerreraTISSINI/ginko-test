@@ -16,7 +16,7 @@ Aplicación frontend para gestionar órdenes de pago a proveedores (banca empres
 
 ### Mock de API
 
-_Se documentará en el commit del Bloque 1 (json-server)._ La elección será **json-server** por simplicidad, archivo `db.json` versionado y scripts npm claros para correr API y frontend en paralelo.
+**json-server** con datos en `db.json`. Expone `GET /ordenes` en `http://localhost:3000`. Se eligió por bajo setup, REST realista y facilidad para extender CRUD en bloques siguientes (crear orden, PATCH de estado).
 
 ### UI / estilos
 
@@ -31,10 +31,25 @@ Sin librería de componentes por ahora: **CSS propio** con variables y breakpoin
 
 ```bash
 npm install
+```
+
+**Opción recomendada** (API + frontend en un solo comando):
+
+```bash
+npm run dev:all
+```
+
+**Opción manual** (dos terminales):
+
+```bash
+# Terminal 1 — mock API
+npm run api
+
+# Terminal 2 — frontend
 npm run dev
 ```
 
-Abrir la URL que muestra Vite (por defecto `http://localhost:5173`).
+Abrir `http://localhost:5173`. La API mock corre en `http://localhost:3000` (configurable con `VITE_API_URL` en `.env.development`).
 
 ### Pruebas
 
@@ -59,7 +74,7 @@ src/
 | Bloque | Contenido | Estado |
 |--------|-----------|--------|
 | 0 | Repo, scaffold, README base | ✅ Hecho |
-| 1 | Mock API + listado (tabla/cards, estados, paginación) | Pendiente |
+| 1 | Mock API + listado (tabla/cards, estados, paginación) | ✅ Hecho |
 | 2 | Filtros + query params en URL | Pendiente |
 | 3 | Formulario de creación | Pendiente |
 | 4 | Detalle y transición de estado | Pendiente |
@@ -71,7 +86,9 @@ src/
 _Se irán completando por bloque en este README._
 
 - **TypeScript**: reduce errores en estados de orden y reglas de transición.
-- **Estado local vs Pinia**: las vistas mantienen estado de UI (filtros en formulario, modales); Pinia concentrará la lista de órdenes y operaciones que varias rutas consumen. Detalle en bloque 5.
+- **Paginación del lado del cliente**: con 12 órdenes mock y página de 5 ítems, evita lógica extra en json-server; el composable `useClientPagination` se reutilizará cuando los filtros reduzcan el conjunto visible (Bloque 2).
+- **Estado local vs Pinia**: Pinia guarda la lista cargada desde la API, `loading` y `error` (compartidos entre rutas). La página actual de paginación vive en la vista vía composable — es estado de UI que no necesita ser global.
+- **Responsivo**: tabla desde 768px (tablet/desktop), tarjetas apiladas en mobile; breakpoint desktop 1024px para tipografía.
 
 ## Pendientes
 
