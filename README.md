@@ -18,9 +18,29 @@ Aplicación frontend para gestionar órdenes de pago a proveedores (banca empres
 
 **json-server** con datos en `db.json`. Expone `GET /ordenes` en `http://localhost:3000`. Se eligió por bajo setup, REST realista y facilidad para extender CRUD en bloques siguientes (crear orden, PATCH de estado).
 
-### UI / estilos
+### UI / estilos — Element Plus
 
-Sin librería de componentes por ahora: **CSS propio** con variables y breakpoints (mobile / tablet / desktop). Menos dependencias y control total para la sustentación en vivo.
+**Librería elegida: [Element Plus](https://element-plus.org/)** (Vue 3).
+
+| Opción | Por qué no la elegimos |
+|--------|-------------------------|
+| **Tailwind** | Es CSS utilitario, no trae tabla, select ni formularios listos; seguirías armando mucho a mano. |
+| **Vuetify** | Material Design, más pesada; exige `v-app`, tokens y convenciones extra — más curva de aprendizaje. |
+| **PrimeVue** | Muy completa, pero temas/configuración más verbosa para una prueba con tiempo acotado. |
+| **Element Plus** | ✅ API clara (`el-table`, `el-select`, `el-form`, `el-tag`), docs buenas, mucho uso en Vue 3, fácil de leer en entrevista. |
+
+**Por qué encaja con esta prueba:** el listado pide tabla + estados visuales + formulario con validaciones + mensajes de error — todo eso ya viene resuelto con pocos componentes. Importación bajo demanda con `unplugin-vue-components` para no inflar el bundle.
+
+**Setup (próximo commit de integración):**
+
+```bash
+npm install element-plus
+npm install -D unplugin-vue-components unplugin-auto-import
+```
+
+Configuración en `vite.config.ts` con `ElementPlusResolver` (ver [quickstart](https://element-plus.org/en-US/guide/quickstart.html)).
+
+**Qué reemplazaremos poco a poco:** `OrdersTable` → `el-table`, filtros → `el-select` / `el-input`, estados → `el-tag`, formulario Bloque 3 → `el-form` + reglas. La lógica (Pinia, filtros, router) no cambia — solo la capa visual.
 
 ## Requisitos previos
 
