@@ -1,7 +1,8 @@
 <script setup lang="ts">
 defineProps<{
   currentPage: number
-  totalPages: number
+  pageSize: number
+  total: number
   rangeLabel: string
 }>()
 
@@ -9,36 +10,23 @@ const emit = defineEmits<{
   'update:currentPage': [page: number]
 }>()
 
-function goTo(page: number) {
+function onPageChange(page: number) {
   emit('update:currentPage', page)
 }
 </script>
 
 <template>
-  <nav class="orders-pagination" aria-label="Paginación de órdenes">
+  <div class="orders-pagination">
     <span class="orders-pagination__range">{{ rangeLabel }}</span>
-    <div class="orders-pagination__controls">
-      <button
-        type="button"
-        class="orders-pagination__btn"
-        :disabled="currentPage <= 1"
-        @click="goTo(currentPage - 1)"
-      >
-        Anterior
-      </button>
-      <span class="orders-pagination__page">
-        Página {{ currentPage }} de {{ totalPages }}
-      </span>
-      <button
-        type="button"
-        class="orders-pagination__btn"
-        :disabled="currentPage >= totalPages"
-        @click="goTo(currentPage + 1)"
-      >
-        Siguiente
-      </button>
-    </div>
-  </nav>
+    <el-pagination
+      :current-page="currentPage"
+      :page-size="pageSize"
+      :total="total"
+      layout="prev, pager, next"
+      background
+      @current-change="onPageChange"
+    />
+  </div>
 </template>
 
 <style scoped>
@@ -56,34 +44,5 @@ function goTo(page: number) {
 .orders-pagination__range {
   font-size: 0.875rem;
   color: #6b7280;
-}
-
-.orders-pagination__controls {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.orders-pagination__page {
-  font-size: 0.875rem;
-  color: #374151;
-}
-
-.orders-pagination__btn {
-  padding: 0.4rem 0.85rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background: #fff;
-  color: #374151;
-  cursor: pointer;
-}
-
-.orders-pagination__btn:hover:not(:disabled) {
-  background: #f9fafb;
-}
-
-.orders-pagination__btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>

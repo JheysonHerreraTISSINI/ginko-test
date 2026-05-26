@@ -23,7 +23,7 @@ const filteredOrders = computed(() => {
   return orders.value.filter((order) => order.estado === statusFilter.value)
 })
 
-const { currentPage, totalPages, paginatedItems, rangeLabel, goToPage, resetPage } =
+const { currentPage, paginatedItems, rangeLabel, goToPage, resetPage } =
   useClientPagination(filteredOrders, ORDERS_PAGE_SIZE)
 
 onMounted(() => {
@@ -82,7 +82,8 @@ watch(statusFilter, () => {
 
       <OrdersPagination
         :current-page="currentPage"
-        :total-pages="totalPages"
+        :page-size="ORDERS_PAGE_SIZE"
+        :total="filteredOrders.length"
         :range-label="rangeLabel"
         @update:current-page="goToPage"
       />
