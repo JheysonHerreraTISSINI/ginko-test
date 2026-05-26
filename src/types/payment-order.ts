@@ -1,4 +1,5 @@
 export type PaymentOrderStatus = 'BORRADOR' | 'APROBADA' | 'RECHAZADA' | 'PAGADA'
+export type StatusFilter = 'todos' | PaymentOrderStatus
 
 export interface PaymentOrder {
   id: string

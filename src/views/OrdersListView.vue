@@ -1,25 +1,40 @@
 <script setup lang="ts">
-import { onMounted, toRef, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import OrdersCards from '@/components/orders/OrdersCards.vue'
 import OrdersPagination from '@/components/orders/OrdersPagination.vue'
+import OrdersStatusFilter from '@/components/orders/OrdersStatusFilter.vue'
 import OrdersTable from '@/components/orders/OrdersTable.vue'
 import ViewMessage from '@/components/ui/ViewMessage.vue'
 import { ORDERS_PAGE_SIZE } from '@/constants/pagination'
 import { useClientPagination } from '@/composables/useClientPagination'
 import { usePaymentOrdersStore } from '@/stores/payment-orders'
+import type { StatusFilter } from '@/types/payment-order'
 
 const store = usePaymentOrdersStore()
 const { orders, loading, error, isEmpty } = storeToRefs(store)
 
+const statusFilter = ref<StatusFilter>('todos')
+
+const filteredOrders = computed(() => {
+  if (statusFilter.value === 'todos') {
+    return orders.value
+  }
+  return orders.value.filter((order) => order.estado === statusFilter.value)
+})
+
 const { currentPage, totalPages, paginatedItems, rangeLabel, goToPage, resetPage } =
-  useClientPagination(toRef(orders), ORDERS_PAGE_SIZE)
+  useClientPagination(filteredOrders, ORDERS_PAGE_SIZE)
 
 onMounted(() => {
   store.loadOrders()
 })
 
 watch(orders, () => {
+  resetPage()
+})
+
+watch(statusFilter, () => {
   resetPage()
 })
 </script>
@@ -56,6 +71,8 @@ watch(orders, () => {
     />
 
     <template v-else>
+      <OrdersStatusFilter v-model:status-filter="statusFilter" />
+
       <div class="orders-list__desktop">
         <OrdersTable :orders="paginatedItems" />
       </div>

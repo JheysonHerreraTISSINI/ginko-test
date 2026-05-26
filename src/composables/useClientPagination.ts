@@ -1,7 +1,11 @@
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
-export function useClientPagination<T>(items: Ref<T[]>, pageSize: number) {
+export function useClientPagination<T>(
+  itemsSource: MaybeRefOrGetter<T[]>,
+  pageSize: number,
+) {
   const currentPage = ref(1)
+  const items = computed(() => toValue(itemsSource))
 
   const totalPages = computed(() =>
     Math.max(1, Math.ceil(items.value.length / pageSize)),
