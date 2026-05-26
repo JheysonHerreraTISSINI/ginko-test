@@ -11,6 +11,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ElAlert: typeof import('element-plus/es')['ElAlert']
+    ElEmpty: typeof import('element-plus/es')['ElEmpty']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElSelect: typeof import('element-plus/es')['ElSelect']
@@ -26,5 +28,8 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     StatusBadge: typeof import('./src/components/orders/StatusBadge.vue')['default']
     ViewMessage: typeof import('./src/components/ui/ViewMessage.vue')['default']
+  }
+  export interface GlobalDirectives {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }
