@@ -88,7 +88,7 @@ src/
 |--------|-----------|--------|
 | 0 | Repo, scaffold, README base | ✅ Hecho |
 | 1 | Mock API + listado (tabla/cards, estados, paginación) | ✅ Hecho |
-| 2 | Filtros + query params en URL | Pendiente |
+| 2 | Filtros + query params en URL | ✅ Hecho |
 | 3 | Formulario de creación | Pendiente |
 | 4 | Detalle y transición de estado | Pendiente |
 | 5 | Calidad transversal (tests, responsivo, documentación Pinia) | Pendiente |
@@ -99,7 +99,8 @@ src/
 _Se irán completando por bloque en este README._
 
 - **TypeScript**: reduce errores en estados de orden y reglas de transición.
-- **Paginación del lado del cliente**: con 12 órdenes mock y página de 5 ítems, evita lógica extra en json-server; el composable `useClientPagination` se reutilizará cuando los filtros reduzcan el conjunto visible (Bloque 2).
+- **Paginación del lado del cliente**: con 12 órdenes mock y página de 5 ítems, evita lógica extra en json-server; el composable `useClientPagination` pagina el resultado ya filtrado.
+- **Filtros en URL**: query params `estado` (omitido = todos) y `busqueda` (texto en proveedor). Ejemplo: `/?estado=BORRADOR&busqueda=logística`. La lógica AND está en `filterOrders`; la sincronización en `useOrderFilters`.
 - **Estado local vs Pinia**: Pinia guarda la lista cargada desde la API, `loading` y `error` (compartidos entre rutas). La página actual de paginación vive en la vista vía composable — es estado de UI que no necesita ser global.
 - **Responsivo**: tabla desde 768px (tablet/desktop), tarjetas apiladas en mobile; breakpoint desktop 1024px para tipografía.
 

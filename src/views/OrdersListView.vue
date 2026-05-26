@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import OrdersCards from '@/components/orders/OrdersCards.vue'
 import OrdersPagination from '@/components/orders/OrdersPagination.vue'
@@ -9,29 +9,18 @@ import OrdersTable from '@/components/orders/OrdersTable.vue'
 import ViewMessage from '@/components/ui/ViewMessage.vue'
 import { ORDERS_PAGE_SIZE } from '@/constants/pagination'
 import { useClientPagination } from '@/composables/useClientPagination'
+import { useOrderFilters } from '@/composables/useOrderFilters'
 import { usePaymentOrdersStore } from '@/stores/payment-orders'
-import type { StatusFilter } from '@/types/payment-order'
+import { filterOrders } from '@/utils/filter-orders'
 
 const store = usePaymentOrdersStore()
 const { orders, loading, error, isEmpty } = storeToRefs(store)
 
-const statusFilter = ref<StatusFilter>('todos')
-const searchQuery = ref('')
+const { statusFilter, searchQuery } = useOrderFilters()
 
-const filteredOrders = computed(() => {
-  let result = orders.value
-
-  if (statusFilter.value !== 'todos') {
-    result = result.filter((order) => order.estado === statusFilter.value)
-  }
-
-  const term = searchQuery.value.trim().toLowerCase()
-  if (term) {
-    result = result.filter((order) => order.proveedor.toLowerCase().includes(term))
-  }
-
-  return result
-})
+const filteredOrders = computed(() =>
+  filterOrders(orders.value, statusFilter.value, searchQuery.value),
+)
 
 const hasFilteredResults = computed(() => filteredOrders.value.length > 0)
 
