@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElTag: typeof import('element-plus/es')['ElTag']
     OrderCard: typeof import('./src/components/orders/OrderCard.vue')['default']
     OrdersCards: typeof import('./src/components/orders/OrdersCards.vue')['default']
     OrdersPagination: typeof import('./src/components/orders/OrdersPagination.vue')['default']

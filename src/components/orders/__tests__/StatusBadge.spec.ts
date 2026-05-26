@@ -3,14 +3,14 @@ import { mount } from '@vue/test-utils'
 import StatusBadge from '../StatusBadge.vue'
 
 describe('StatusBadge', () => {
-  it('muestra etiqueta legible para cada estado', () => {
+  it('muestra etiqueta legible con el-tag', () => {
     const wrapper = mount(StatusBadge, { props: { status: 'APROBADA' } })
     expect(wrapper.text()).toBe('Aprobada')
-    expect(wrapper.classes()).toContain('status-badge--aprobada')
+    expect(wrapper.find('.el-tag').exists()).toBe(true)
   })
 
-  it('aplica clase visual según estado rechazado', () => {
+  it('usa tipo danger para estado rechazado', () => {
     const wrapper = mount(StatusBadge, { props: { status: 'RECHAZADA' } })
-    expect(wrapper.classes()).toContain('status-badge--rechazada')
+    expect(wrapper.find('.el-tag--danger').exists()).toBe(true)
   })
 })
