@@ -43,6 +43,32 @@ describe('OrdersListView', () => {
     expect(wrapper.text()).not.toContain('Cargando órdenes')
   })
 
+  it('filtra por nombre de proveedor', async () => {
+    vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([
+      ...mockOrders,
+      {
+        id: 'ord-003',
+        proveedor: 'Papelera Central',
+        monto: 50000,
+        concepto: 'Otro',
+        fechaCreacion: '2026-05-22T10:00:00.000Z',
+        estado: 'APROBADA',
+      },
+    ])
+
+    const wrapper = mount(OrdersListView, {
+      global: { plugins: [createPinia()] },
+    })
+    await flushPromises()
+
+    const searchInput = wrapper.find('.search-filter__input input')
+    await searchInput.setValue('Papelera')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Papelera Central')
+    expect(wrapper.text()).not.toContain('Proveedor Test')
+  })
+
   it('muestra mensaje de error cuando falla la API', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockRejectedValue(new Error('fail'))
 

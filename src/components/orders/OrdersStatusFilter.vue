@@ -9,7 +9,11 @@ const statusFilter = defineModel<StatusFilter>('statusFilter', { required: true 
 <template>
   <div class="status-filter">
     <span class="status-filter__label">Estado</span>
-    <el-select v-model="statusFilter" placeholder="Seleccionar estado" class="status-filter__select">
+    <el-select
+      v-model="statusFilter"
+      placeholder="Seleccionar estado"
+      class="status-filter__select"
+    >
       <el-option
         v-for="option in statusOptions"
         :key="option.value"
@@ -25,11 +29,7 @@ const statusFilter = defineModel<StatusFilter>('statusFilter', { required: true 
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  width: 100%;
 }
 
 .status-filter__label {
@@ -38,6 +38,10 @@ const statusFilter = defineModel<StatusFilter>('statusFilter', { required: true 
 }
 
 .status-filter__select {
-  max-width: 14rem;
+  width: 100%;
+}
+
+.status-filter :deep(.el-select) {
+  width: 100%;
 }
 </style>

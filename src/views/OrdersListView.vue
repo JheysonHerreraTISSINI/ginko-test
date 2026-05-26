@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import OrdersCards from '@/components/orders/OrdersCards.vue'
 import OrdersPagination from '@/components/orders/OrdersPagination.vue'
+import OrdersSearchFilter from '@/components/orders/OrdersSearchFilter.vue'
 import OrdersStatusFilter from '@/components/orders/OrdersStatusFilter.vue'
 import OrdersTable from '@/components/orders/OrdersTable.vue'
 import ViewMessage from '@/components/ui/ViewMessage.vue'
@@ -15,13 +16,24 @@ const store = usePaymentOrdersStore()
 const { orders, loading, error, isEmpty } = storeToRefs(store)
 
 const statusFilter = ref<StatusFilter>('todos')
+const searchQuery = ref('')
 
 const filteredOrders = computed(() => {
-  if (statusFilter.value === 'todos') {
-    return orders.value
+  let result = orders.value
+
+  if (statusFilter.value !== 'todos') {
+    result = result.filter((order) => order.estado === statusFilter.value)
   }
-  return orders.value.filter((order) => order.estado === statusFilter.value)
+
+  const term = searchQuery.value.trim().toLowerCase()
+  if (term) {
+    result = result.filter((order) => order.proveedor.toLowerCase().includes(term))
+  }
+
+  return result
 })
+
+const hasFilteredResults = computed(() => filteredOrders.value.length > 0)
 
 const { currentPage, paginatedItems, rangeLabel, goToPage, resetPage } =
   useClientPagination(filteredOrders, ORDERS_PAGE_SIZE)
@@ -35,6 +47,10 @@ watch(orders, () => {
 })
 
 watch(statusFilter, () => {
+  resetPage()
+})
+
+watch(searchQuery, () => {
   resetPage()
 })
 </script>
@@ -71,22 +87,34 @@ watch(statusFilter, () => {
     />
 
     <template v-else>
-      <OrdersStatusFilter v-model:status-filter="statusFilter" />
-
-      <div class="orders-list__desktop">
-        <OrdersTable :orders="paginatedItems" />
-      </div>
-      <div class="orders-list__mobile">
-        <OrdersCards :orders="paginatedItems" />
+      <div class="orders-list__filters">
+        <OrdersStatusFilter v-model:status-filter="statusFilter" />
+        <OrdersSearchFilter v-model:search-query="searchQuery" />
       </div>
 
-      <OrdersPagination
-        :current-page="currentPage"
-        :page-size="ORDERS_PAGE_SIZE"
-        :total="filteredOrders.length"
-        :range-label="rangeLabel"
-        @update:current-page="goToPage"
+      <ViewMessage
+        v-if="!hasFilteredResults"
+        variant="empty"
+        title="Sin resultados para estos filtros"
+        description="Prueba otro estado o un nombre de proveedor distinto."
       />
+
+      <template v-else>
+        <div class="orders-list__desktop">
+          <OrdersTable :orders="paginatedItems" />
+        </div>
+        <div class="orders-list__mobile">
+          <OrdersCards :orders="paginatedItems" />
+        </div>
+
+        <OrdersPagination
+          :current-page="currentPage"
+          :page-size="ORDERS_PAGE_SIZE"
+          :total="filteredOrders.length"
+          :range-label="rangeLabel"
+          @update:current-page="goToPage"
+        />
+      </template>
     </template>
   </section>
 </template>
@@ -111,6 +139,35 @@ watch(statusFilter, () => {
   margin: 0.25rem 0 0;
   color: #6b7280;
   font-size: 0.9rem;
+}
+
+.orders-list__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .orders-list__filters {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 1.25rem;
+  }
+
+  .orders-list__filters > :first-child {
+    flex: 0 0 14rem;
+    max-width: 14rem;
+  }
+
+  .orders-list__filters > :last-child {
+    flex: 1;
+    min-width: 12rem;
+  }
 }
 
 .orders-list__desktop {
