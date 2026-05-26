@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import OrdersCards from '@/components/orders/OrdersCards.vue'
 import OrdersPagination from '@/components/orders/OrdersPagination.vue'
@@ -47,8 +48,13 @@ watch(searchQuery, () => {
 <template>
   <section class="orders-list">
     <header class="orders-list__header">
-      <h1>Órdenes de pago</h1>
-      <p class="orders-list__subtitle">Gestión de pagos a proveedores</p>
+      <div>
+        <h1>Órdenes de pago</h1>
+        <p class="orders-list__subtitle">Gestión de pagos a proveedores</p>
+      </div>
+      <RouterLink :to="{ name: 'order-create' }">
+        <el-button type="primary">Nueva orden</el-button>
+      </RouterLink>
     </header>
 
     <ViewMessage
@@ -116,6 +122,11 @@ watch(searchQuery, () => {
 }
 
 .orders-list__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.25rem;
 }
 

@@ -32,7 +32,10 @@ async function mountWithRouter(initialPath = '/') {
 
   const router = createRouter({
     history: createWebHistory(),
-    routes: [{ path: '/', component: OrdersListView }],
+    routes: [
+      { path: '/', name: 'orders-list', component: OrdersListView },
+      { path: '/ordenes/nueva', name: 'order-create', component: { template: '<div />' } },
+    ],
   })
 
   await router.push(initialPath)

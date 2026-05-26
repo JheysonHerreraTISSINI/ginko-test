@@ -8,6 +8,11 @@ const router = createRouter({
       name: 'orders-list',
       component: () => import('@/views/OrdersListView.vue'),
     },
+    {
+      path: '/ordenes/nueva',
+      name: 'order-create',
+      component: () => import('@/views/OrderCreateView.vue'),
+    },
   ],
 })
 
