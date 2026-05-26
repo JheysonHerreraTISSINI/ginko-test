@@ -31,16 +31,9 @@ Aplicación frontend para gestionar órdenes de pago a proveedores (banca empres
 
 **Por qué encaja con esta prueba:** el listado pide tabla + estados visuales + formulario con validaciones + mensajes de error — todo eso ya viene resuelto con pocos componentes. Importación bajo demanda con `unplugin-vue-components` para no inflar el bundle.
 
-**Setup (próximo commit de integración):**
+**Setup:** instalado con `ElementPlusResolver` en `vite.config.ts` (auto-import). Ver [quickstart](https://element-plus.org/en-US/guide/quickstart.html).
 
-```bash
-npm install element-plus
-npm install -D unplugin-vue-components unplugin-auto-import
-```
-
-Configuración en `vite.config.ts` con `ElementPlusResolver` (ver [quickstart](https://element-plus.org/en-US/guide/quickstart.html)).
-
-**Qué reemplazaremos poco a poco:** `OrdersTable` → `el-table`, filtros → `el-select` / `el-input`, estados → `el-tag`, formulario Bloque 3 → `el-form` + reglas. La lógica (Pinia, filtros, router) no cambia — solo la capa visual.
+La lógica (Pinia, filtros, router) no cambia — solo la capa visual.
 
 ## Requisitos previos
 

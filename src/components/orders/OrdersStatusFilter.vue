@@ -2,25 +2,35 @@
 import type { StatusFilter } from '@/types/payment-order'
 
 const statusFilter = defineModel<StatusFilter>('statusFilter', { required: true })
+
+const statusOptions: { value: StatusFilter; label: string }[] = [
+  { value: 'todos', label: 'Todos' },
+  { value: 'BORRADOR', label: 'Borrador' },
+  { value: 'APROBADA', label: 'Aprobada' },
+  { value: 'RECHAZADA', label: 'Rechazada' },
+  { value: 'PAGADA', label: 'Pagada' },
+]
 </script>
 
 <template>
   <div class="status-filter">
-    <label class="status-filter__field">
-      <span>Estado</span>
-      <select v-model="statusFilter">
-        <option value="todos">Todos</option>
-        <option value="BORRADOR">Borrador</option>
-        <option value="APROBADA">Aprobada</option>
-        <option value="RECHAZADA">Rechazada</option>
-        <option value="PAGADA">Pagada</option>
-      </select>
-    </label>
+    <span class="status-filter__label">Estado</span>
+    <el-select v-model="statusFilter" placeholder="Seleccionar estado" class="status-filter__select">
+      <el-option
+        v-for="option in statusOptions"
+        :key="option.value"
+        :label="option.label"
+        :value="option.value"
+      />
+    </el-select>
   </div>
 </template>
 
 <style scoped>
 .status-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
   background: #fff;
@@ -28,21 +38,12 @@ const statusFilter = defineModel<StatusFilter>('statusFilter', { required: true 
   border-radius: 0.5rem;
 }
 
-.status-filter__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+.status-filter__label {
   font-size: 0.875rem;
-}
-
-.status-filter__field span {
   font-weight: 500;
 }
 
-.status-filter__field select {
-  padding: 0.5rem 0.65rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
+.status-filter__select {
   max-width: 14rem;
 }
 </style>
