@@ -27,6 +27,23 @@ const showLoading = computed(() => loading.value && !order.value)
 const showNotFound = computed(() => !loading.value && !order.value)
 const isTransitioning = ref(false)
 const transitionError = ref<string | null>(null)
+const pendingTransition = ref<TransitionTargetStatus | null>(null)
+
+async function executeTransition(targetStatus: TransitionTargetStatus) {
+  transitionError.value = null
+  isTransitioning.value = true
+
+  try {
+    await store.transitionOrder(orderId.value, targetStatus)
+    pendingTransition.value = null
+    ElMessage.success(transitionSuccessMessage(targetStatus))
+  } catch (error) {
+    transitionError.value = getApiErrorMessage(error, TRANSITION_ERROR_FALLBACK)
+    pendingTransition.value = targetStatus
+  } finally {
+    isTransitioning.value = false
+  }
+}
 
 async function handleTransition(targetStatus: TransitionTargetStatus) {
   if (!order.value) return
@@ -45,17 +62,12 @@ async function handleTransition(targetStatus: TransitionTargetStatus) {
     return
   }
 
-  transitionError.value = null
-  isTransitioning.value = true
+  await executeTransition(targetStatus)
+}
 
-  try {
-    await store.transitionOrder(orderId.value, targetStatus)
-    ElMessage.success(transitionSuccessMessage(targetStatus))
-  } catch (error) {
-    transitionError.value = getApiErrorMessage(error, TRANSITION_ERROR_FALLBACK)
-  } finally {
-    isTransitioning.value = false
-  }
+async function retryTransition() {
+  if (!pendingTransition.value) return
+  await executeTransition(pendingTransition.value)
 }
 
 onMounted(async () => {
@@ -96,7 +108,11 @@ onMounted(async () => {
         title="No se pudo cambiar el estado"
         :description="transitionError"
         class="order-detail__transition-error"
-      />
+      >
+        <el-button type="primary" :loading="isTransitioning" @click="retryTransition">
+          Reintentar
+        </el-button>
+      </ViewMessage>
       <OrderDetailInfo :order="order" />
       <OrderStatusActions
         :status="order.estado"

@@ -134,7 +134,7 @@ Query params `estado` y `busqueda`, sincronizados con `useOrderFilters`. Lógica
 
 **Pinia:** `orders`, carga inicial (`loading`/`error`), `loadOrders`, `createOrder`, `transitionOrder` (con actualización optimista).
 
-**Local:** página de paginación, filtros en composable + URL, formulario de creación, error de transición en detalle (`transitionError`, `isTransitioning`).
+**Local:** página de paginación, filtros en composable + URL, formulario de creación, error de transición en detalle (`transitionError`, `pendingTransition`, `isTransitioning`).
 
 Criterio: si varias rutas comparten datos → Pinia; si es UI de una pantalla → local.
 
@@ -161,7 +161,7 @@ Más de **dos componentes** exigidos por el enunciado: **18 archivos** de test, 
 3. **Nueva orden** → validaciones → crear → toast y orden en listado.  
 4. Clic en orden → detalle completo.  
 5. **Aprobar** / **Rechazar** (BORRADOR) o **Marcar pagada** (APROBADA) con diálogo de confirmación.  
-6. Detener `npm run api` y confirmar transición → mensaje de error; estado no cambia.  
+6. Detener `npm run api` y confirmar transición → mensaje de error y botón **Reintentar**; estado no cambia hasta que la API responda.  
 7. Redimensionar ventana: cards (móvil) vs tabla (≥768px).
 
 ## Capturas de pantalla
@@ -192,7 +192,6 @@ Lo siguiente **no se implementó** de forma deliberada (prioridad al bloque obli
 | Modo oscuro (bloque 6) | Opcional; fuera de alcance |
 | Animaciones en listado al cambiar estado (bloque 6) | Opcional; el cambio ya es visible vía optimistic update + badge |
 | IDs consecutivos `ord-XXX` en POST | json-server v1 beta genera ids aleatorios; se acepta la respuesta del mock |
-| Reintento dedicado tras error de transición | El usuario puede volver a usar la acción; sin botón “Reintentar” |
 | Auth, roles, edición de órdenes | Fuera del enunciado |
 
 **Implementado del bloque 6 (opcional):** composable `useApiRequest` (6.1) y optimistic update en transición (6.2).
