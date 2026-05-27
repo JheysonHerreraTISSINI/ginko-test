@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import OrderDetailInfo from '@/components/orders/OrderDetailInfo.vue'
 import OrderStatusActions from '@/components/orders/OrderStatusActions.vue'
 import ViewMessage from '@/components/ui/ViewMessage.vue'
 import { usePaymentOrdersStore } from '@/stores/payment-orders'
 import {
+  transitionConfirmMessage,
   transitionSuccessMessage,
   type TransitionTargetStatus,
 } from '@/utils/order-status-transitions'
@@ -27,12 +28,25 @@ const isTransitioning = ref(false)
 async function handleTransition(targetStatus: TransitionTargetStatus) {
   if (!order.value) return
 
+  try {
+    await ElMessageBox.confirm(
+      transitionConfirmMessage(targetStatus, order.value.proveedor),
+      'Confirmar cambio de estado',
+      {
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        type: 'warning',
+      },
+    )
+  } catch {
+    return
+  }
+
   isTransitioning.value = true
   try {
     await store.transitionOrder(orderId.value, targetStatus)
     ElMessage.success(transitionSuccessMessage(targetStatus))
-  } catch (error) {
-    console.error(error)
+  } catch {
     ElMessage.error('No pudimos actualizar el estado. Intenta de nuevo.')
   } finally {
     isTransitioning.value = false

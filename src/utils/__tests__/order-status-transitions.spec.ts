@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   canTransitionTo,
   getAllowedTransitions,
+  transitionConfirmMessage,
 } from '../order-status-transitions'
 
 describe('order-status-transitions', () => {
@@ -31,5 +32,11 @@ describe('order-status-transitions', () => {
     const actions = getAllowedTransitions('APROBADA')
     expect(actions).toHaveLength(1)
     expect(actions[0]?.label).toBe('Marcar como pagada')
+  })
+
+  it('arma mensaje de confirmación según destino', () => {
+    expect(transitionConfirmMessage('APROBADA', 'Acme SAS')).toContain('aprobar')
+    expect(transitionConfirmMessage('RECHAZADA', 'Acme SAS')).toContain('rechazar')
+    expect(transitionConfirmMessage('PAGADA', 'Acme SAS')).toContain('pagada')
   })
 })

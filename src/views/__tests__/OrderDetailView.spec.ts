@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
+import { ElMessageBox } from 'element-plus'
 import OrderDetailView from '../OrderDetailView.vue'
 import * as paymentOrdersApi from '@/api/payment-orders-api'
 import type { PaymentOrder } from '@/types/payment-order'
@@ -68,7 +69,8 @@ describe('OrderDetailView', () => {
     expect(wrapper.text()).not.toContain('Marcar como pagada')
   })
 
-  it('actualiza el estado al usar una acción permitida', async () => {
+  it('actualiza el estado tras confirmar en el diálogo', async () => {
+    vi.spyOn(ElMessageBox, 'confirm').mockResolvedValue('confirm' as never)
     vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus').mockResolvedValue({
       ...mockOrder,
       estado: 'APROBADA',
@@ -81,11 +83,27 @@ describe('OrderDetailView', () => {
     await approveBtn?.trigger('click')
     await flushPromises()
 
+    expect(ElMessageBox.confirm).toHaveBeenCalledOnce()
     expect(wrapper.text()).toContain('Aprobada')
     expect(paymentOrdersApi.patchPaymentOrderStatus).toHaveBeenCalledWith(
       'ord-001',
       'APROBADA',
     )
+  })
+
+  it('no transiciona si el usuario cancela la confirmación', async () => {
+    vi.spyOn(ElMessageBox, 'confirm').mockRejectedValue('cancel')
+    vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus')
+
+    const { wrapper } = await mountView()
+    const approveBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Aprobar orden'))
+    await approveBtn?.trigger('click')
+    await flushPromises()
+
+    expect(paymentOrdersApi.patchPaymentOrderStatus).not.toHaveBeenCalled()
+    expect(wrapper.text()).toContain('Borrador')
   })
 
   it('muestra mensaje si la orden no existe', async () => {

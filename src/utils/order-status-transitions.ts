@@ -50,3 +50,16 @@ export function transitionSuccessMessage(
 ): string {
   return `Orden marcada como ${statusLabels[targetStatus].toLowerCase()}`
 }
+
+const CONFIRM_VERB: Record<TransitionTargetStatus, string> = {
+  APROBADA: 'aprobar',
+  RECHAZADA: 'rechazar',
+  PAGADA: 'marcar como pagada',
+}
+
+export function transitionConfirmMessage(
+  targetStatus: TransitionTargetStatus,
+  proveedor: string,
+): string {
+  return `¿Confirmas ${CONFIRM_VERB[targetStatus]} la orden de ${proveedor}?`
+}
