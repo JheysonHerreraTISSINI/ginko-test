@@ -8,6 +8,8 @@ import OrderStatusActions from '@/components/orders/OrderStatusActions.vue'
 import ViewMessage from '@/components/ui/ViewMessage.vue'
 import { usePaymentOrdersStore } from '@/stores/payment-orders'
 import {
+  getApiErrorMessage,
+  TRANSITION_ERROR_FALLBACK,
   transitionConfirmMessage,
   transitionSuccessMessage,
   type TransitionTargetStatus,
@@ -24,6 +26,7 @@ const order = computed(() => store.getOrderById(orderId.value))
 const showLoading = computed(() => loading.value && !order.value)
 const showNotFound = computed(() => !loading.value && !order.value)
 const isTransitioning = ref(false)
+const transitionError = ref<string | null>(null)
 
 async function handleTransition(targetStatus: TransitionTargetStatus) {
   if (!order.value) return
@@ -42,10 +45,14 @@ async function handleTransition(targetStatus: TransitionTargetStatus) {
     return
   }
 
+  transitionError.value = null
   isTransitioning.value = true
+
   try {
     await store.transitionOrder(orderId.value, targetStatus)
     ElMessage.success(transitionSuccessMessage(targetStatus))
+  } catch (error) {
+    transitionError.value = getApiErrorMessage(error, TRANSITION_ERROR_FALLBACK)
   } catch {
     ElMessage.error('No pudimos actualizar el estado. Intenta de nuevo.')
   } finally {
@@ -85,6 +92,14 @@ onMounted(async () => {
     />
 
     <template v-else-if="order">
+      <ViewMessage
+        v-if="transitionError"
+        variant="error"
+        title="No se pudo cambiar el estado"
+        :description="transitionError"
+        class="order-detail__transition-error"
+      />
+
       <OrderDetailInfo :order="order" />
       <OrderStatusActions
         :status="order.estado"
@@ -115,5 +130,9 @@ onMounted(async () => {
   margin: 0.25rem 0 0;
   color: #6b7280;
   font-size: 0.95rem;
+}
+
+.order-detail__transition-error {
+  margin-bottom: 1rem;
 }
 </style>

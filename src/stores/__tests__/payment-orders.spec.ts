@@ -48,4 +48,19 @@ describe('usePaymentOrdersStore', () => {
 
     expect(store.orders[0]?.estado).toBe('APROBADA')
   })
+
+  it('no cambia el estado local si falla el PATCH', async () => {
+    const draft = { ...createdOrder, estado: 'BORRADOR' as const }
+
+    vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([draft])
+    vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus').mockRejectedValue(
+      new Error('API down'),
+    )
+
+    const store = usePaymentOrdersStore()
+    await store.loadOrders()
+
+    await expect(store.transitionOrder('ord-099', 'APROBADA')).rejects.toThrow()
+    expect(store.orders[0]?.estado).toBe('BORRADOR')
+  })
 })

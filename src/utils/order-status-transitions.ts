@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { statusLabels } from '@/constants/order.constant'
 import type { PaymentOrderStatus } from '@/types/payment-order'
 
@@ -57,9 +58,33 @@ const CONFIRM_VERB: Record<TransitionTargetStatus, string> = {
   PAGADA: 'marcar como pagada',
 }
 
+export const TRANSITION_ERROR_FALLBACK =
+  'No pudimos actualizar el estado de la orden. Intenta de nuevo.'
+
 export function transitionConfirmMessage(
   targetStatus: TransitionTargetStatus,
   proveedor: string,
 ): string {
   return `¿Confirmas ${CONFIRM_VERB[targetStatus]} la orden de ${proveedor}?`
+}
+
+export function getApiErrorMessage(
+  error: unknown,
+  fallback: string,
+): string {
+  if (axios.isAxiosError(error)) {
+    if (!error.response) {
+      return 'No pudimos conectar con el servidor. Verifica que la API esté en ejecución.'
+    }
+    if (error.response.status === 404) {
+      return 'La orden ya no existe en el servidor.'
+    }
+    return fallback
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message
+  }
+
+  return fallback
 }

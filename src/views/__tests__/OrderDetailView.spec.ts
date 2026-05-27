@@ -106,6 +106,26 @@ describe('OrderDetailView', () => {
     expect(wrapper.text()).toContain('Borrador')
   })
 
+  it('muestra error y mantiene el estado si falla la API', async () => {
+    vi.spyOn(ElMessageBox, 'confirm').mockResolvedValue('confirm' as never)
+    vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus').mockRejectedValue(
+      new Error('API down'),
+    )
+
+    const { wrapper } = await mountView()
+    const approveBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Aprobar orden'))
+    await approveBtn?.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('No se pudo cambiar el estado')
+    expect(wrapper.text()).toContain('API down')
+    expect(wrapper.text()).toContain('Borrador')
+    expect(wrapper.find('.el-alert').exists()).toBe(true)
+  })
+
+
   it('muestra mensaje si la orden no existe', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([])
 
