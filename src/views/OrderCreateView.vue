@@ -1,18 +1,35 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { FormInstance } from 'element-plus'
+import { MAX_CONCEPT_LENGTH } from '@/constants/order.constant'
 import {
   emptyCreatePaymentOrderForm,
   type CreatePaymentOrderForm,
 } from '@/types/create-payment-order'
-import { createOrderRules } from '@/utils/create-order-rules'
-import { MAX_CONCEPT_LENGTH } from '@/constants/order.constant'
+import { createOrderRules, isCreateOrderFormValid } from '@/utils/create-order-rules'
 
 const router = useRouter()
+const formRef = ref<FormInstance>()
 const form = reactive<CreatePaymentOrderForm>(emptyCreatePaymentOrderForm())
+const isSubmitting = ref(false)
+
+const canSubmit = computed(
+  () => isCreateOrderFormValid(form) && !isSubmitting.value,
+)
 
 function goBack() {
   router.push({ name: 'orders-list' })
+}
+
+async function handleSubmit() {
+  if (!formRef.value) return
+
+  try {
+    await formRef.value.validate()
+  } catch (error) {
+    console.error(error)
+  }
 }
 </script>
 
@@ -24,11 +41,12 @@ function goBack() {
     </header>
 
     <el-form
+      ref="formRef"
       :model="form"
       :rules="createOrderRules"
       label-position="top"
       class="order-create__form"
-      @submit.prevent
+      @submit.prevent="handleSubmit"
     >
       <el-form-item label="Proveedor" prop="proveedor">
         <el-input v-model="form.proveedor" placeholder="Nombre del proveedor" />
@@ -58,7 +76,14 @@ function goBack() {
 
       <div class="order-create__actions">
         <el-button @click="goBack">Cancelar</el-button>
-        <el-button type="primary">Crear orden</el-button>
+        <el-button
+          type="primary"
+          :disabled="!canSubmit"
+          :loading="isSubmitting"
+          @click="handleSubmit"
+        >
+          Crear orden
+        </el-button>
       </div>
     </el-form>
   </section>

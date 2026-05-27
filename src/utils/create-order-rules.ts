@@ -7,7 +7,7 @@ export const createOrderRules: FormRules<CreatePaymentOrderForm> = {
     {
       required: true,
       message: 'El proveedor es obligatorio',
-      trigger: 'blur',
+      trigger: ['blur', 'change'],
     },
   ],
   monto: [
@@ -23,19 +23,28 @@ export const createOrderRules: FormRules<CreatePaymentOrderForm> = {
         }
         callback()
       },
-      trigger: 'blur',
+      trigger: ['blur', 'change'],
     },
   ],
   concepto: [
     {
       required: true,
       message: 'El concepto es obligatorio',
-      trigger: 'blur',
+      trigger: ['blur', 'change'],
     },
     {
       max: MAX_CONCEPT_LENGTH,
       message: `Máximo ${MAX_CONCEPT_LENGTH} caracteres`,
-      trigger: 'blur',
+      trigger: ['blur', 'change'],
     },
   ],
+}
+
+export function isCreateOrderFormValid(form: CreatePaymentOrderForm): boolean {
+  const proveedorOk = form.proveedor.trim().length > 0
+  const montoOk = form.monto !== null && form.monto > 0
+  const conceptoOk =
+    form.concepto.trim().length > 0 && form.concepto.length <= MAX_CONCEPT_LENGTH
+
+  return proveedorOk && montoOk && conceptoOk
 }
