@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { FormInstance } from 'element-plus'
+import { ElMessage, type FormInstance } from 'element-plus'
 import { MAX_CONCEPT_LENGTH } from '@/constants/order.constant'
 import {
   emptyCreatePaymentOrderForm,
   type CreatePaymentOrderForm,
 } from '@/types/create-payment-order'
+import { usePaymentOrdersStore } from '@/stores/payment-orders'
 import { createOrderRules, isCreateOrderFormValid } from '@/utils/create-order-rules'
 
 const router = useRouter()
+const store = usePaymentOrdersStore()
 const formRef = ref<FormInstance>()
 const form = reactive<CreatePaymentOrderForm>(emptyCreatePaymentOrderForm())
 const isSubmitting = ref(false)
@@ -27,8 +29,22 @@ async function handleSubmit() {
 
   try {
     await formRef.value.validate()
-  } catch (error) {
-    console.error(error)
+  } catch {
+    return
+  }
+
+  isSubmitting.value = true
+
+  try {
+    await store.createOrder(form)
+    router.push({
+      name: 'orders-list',
+      state: { orderCreated: true },
+    })
+  } catch {
+    ElMessage.error('No pudimos crear la orden. Verifica la API e intenta de nuevo.')
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>

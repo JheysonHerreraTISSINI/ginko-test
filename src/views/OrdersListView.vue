@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import OrdersCards from '@/components/orders/OrdersCards.vue'
 import OrdersPagination from '@/components/orders/OrdersPagination.vue'
@@ -29,6 +30,14 @@ const { currentPage, paginatedItems, rangeLabel, goToPage, resetPage } =
   useClientPagination(filteredOrders, ORDERS_PAGE_SIZE)
 
 onMounted(() => {
+  if (history.state?.orderCreated) {
+    ElMessage.success({
+      message: 'Orden creada correctamente',
+      duration: 3000,
+    })
+    history.replaceState({ ...history.state, orderCreated: undefined }, '')
+  }
+
   store.loadOrders()
 })
 

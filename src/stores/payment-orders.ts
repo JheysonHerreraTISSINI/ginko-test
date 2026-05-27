@@ -1,7 +1,9 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { fetchPaymentOrders } from '@/api/payment-orders-api'
+import { createPaymentOrder, fetchPaymentOrders } from '@/api/payment-orders-api'
+import type { CreatePaymentOrderForm } from '@/types/create-payment-order'
 import type { PaymentOrder } from '@/types/payment-order'
+import { buildPaymentOrder } from '@/utils/build-payment-order'
 
 export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
   const orders = ref<PaymentOrder[]>([])
@@ -27,11 +29,19 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
     }
   }
 
+  async function createOrder(form: CreatePaymentOrderForm) {
+    const payload = buildPaymentOrder(form, orders.value)
+    const created = await createPaymentOrder(payload)
+    orders.value = [created, ...orders.value]
+    return created
+  }
+
   return {
     orders,
     loading,
     error,
     isEmpty,
     loadOrders,
+    createOrder,
   }
 })

@@ -89,7 +89,7 @@ src/
 | 0 | Repo, scaffold, README base | ✅ Hecho |
 | 1 | Mock API + listado (tabla/cards, estados, paginación) | ✅ Hecho |
 | 2 | Filtros + query params en URL | ✅ Hecho |
-| 3 | Formulario de creación | En curso (inciso 10 ✅) |
+| 3 | Formulario de creación | ✅ Hecho |
 | 4 | Detalle y transición de estado | Pendiente |
 | 5 | Calidad transversal (tests, responsivo, documentación Pinia) | Pendiente |
 | 6 | Extras opcionales | Pendiente |
