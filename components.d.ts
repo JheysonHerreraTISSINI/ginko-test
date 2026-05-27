@@ -25,6 +25,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
     OrderCard: typeof import('./src/components/orders/OrderCard.vue')['default']
+    OrderDetailInfo: typeof import('./src/components/orders/OrderDetailInfo.vue')['default']
     OrdersCards: typeof import('./src/components/orders/OrdersCards.vue')['default']
     OrdersPagination: typeof import('./src/components/orders/OrdersPagination.vue')['default']
     OrdersSearchFilter: typeof import('./src/components/orders/OrdersSearchFilter.vue')['default']

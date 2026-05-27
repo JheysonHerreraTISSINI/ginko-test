@@ -90,7 +90,7 @@ src/
 | 1 | Mock API + listado (tabla/cards, estados, paginación) | ✅ Hecho |
 | 2 | Filtros + query params en URL | ✅ Hecho |
 | 3 | Formulario de creación | ✅ Hecho |
-| 4 | Detalle y transición de estado | En curso (inciso 15 ✅) |
+| 4 | Detalle y transición de estado | En curso (incisos 15–16 ✅) |
 | 5 | Calidad transversal (tests, responsivo, documentación Pinia) | Pendiente |
 | 6 | Extras opcionales | Pendiente |
 

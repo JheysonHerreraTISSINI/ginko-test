@@ -50,10 +50,22 @@ describe('OrderDetailView', () => {
     vi.restoreAllMocks()
   })
 
-  it('muestra el id de la orden en la vista de detalle', async () => {
+  it('muestra toda la información de la orden', async () => {
     const { wrapper } = await mountView()
-    expect(wrapper.text()).toContain('Detalle de orden')
-    expect(wrapper.text()).toContain('ord-001')
+    const text = wrapper.text()
+
+    expect(text).toContain('Detalle de orden')
+    expect(text).toContain('Proveedor Test')
+    expect(text).toContain('ord-001')
+    expect(text).toContain('Concepto de prueba')
+    expect(text).toContain('Borrador')
+  })
+
+  it('muestra mensaje si la orden no existe', async () => {
+    vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([])
+
+    const { wrapper } = await mountView('ord-999', true)
+    expect(wrapper.text()).toContain('Orden no encontrada')
   })
 
   it('vuelve al listado al pulsar Volver', async () => {
