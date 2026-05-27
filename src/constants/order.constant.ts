@@ -24,3 +24,5 @@ export const statusTagTypes: Record<
   RECHAZADA: 'danger',
   PAGADA: 'success',
 }
+
+export const MAX_CONCEPT_LENGTH = 250

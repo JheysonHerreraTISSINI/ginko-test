@@ -5,6 +5,8 @@ import {
   emptyCreatePaymentOrderForm,
   type CreatePaymentOrderForm,
 } from '@/types/create-payment-order'
+import { createOrderRules } from '@/utils/create-order-rules'
+import { MAX_CONCEPT_LENGTH } from '@/constants/order.constant'
 
 const router = useRouter()
 const form = reactive<CreatePaymentOrderForm>(emptyCreatePaymentOrderForm())
@@ -21,12 +23,18 @@ function goBack() {
       <p class="order-create__subtitle">Registra un pago a proveedor</p>
     </header>
 
-    <el-form label-position="top" class="order-create__form" @submit.prevent>
-      <el-form-item label="Proveedor">
+    <el-form
+      :model="form"
+      :rules="createOrderRules"
+      label-position="top"
+      class="order-create__form"
+      @submit.prevent
+    >
+      <el-form-item label="Proveedor" prop="proveedor">
         <el-input v-model="form.proveedor" placeholder="Nombre del proveedor" />
       </el-form-item>
 
-      <el-form-item label="Monto (COP)">
+      <el-form-item label="Monto (COP)" prop="monto">
         <el-input-number
           v-model="form.monto"
           :min="0"
@@ -37,11 +45,13 @@ function goBack() {
         />
       </el-form-item>
 
-      <el-form-item label="Concepto">
+      <el-form-item label="Concepto" prop="concepto">
         <el-input
           v-model="form.concepto"
           type="textarea"
-          :rows="3"
+          :rows="5"
+          :maxlength="MAX_CONCEPT_LENGTH"
+          show-word-limit
           placeholder="Describe el motivo del pago"
         />
       </el-form-item>

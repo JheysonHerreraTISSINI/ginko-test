@@ -22,5 +22,6 @@ describe('OrderCreateView', () => {
     expect(wrapper.text()).toContain('Nueva orden de pago')
     expect(wrapper.find('.el-input').exists()).toBe(true)
     expect(wrapper.find('.el-input-number').exists()).toBe(true)
+    expect(wrapper.find('.el-input__count').exists()).toBe(true)
   })
 })
