@@ -113,7 +113,7 @@ Cada pieza tiene **una responsabilidad**; las vistas solo orquestan.
 | 3 | Formulario de creación | ✅ Hecho |
 | 4 | Detalle y transición de estado | ✅ Hecho |
 | 5 | Calidad transversal (tests, responsivo, documentación Pinia) | ✅ Hecho |
-| 6 | Extras opcionales | En curso (inciso 6.1 ✅) |
+| 6 | Extras opcionales | En curso (incisos 6.1–6.2 ✅) |
 
 ## Estado local vs Pinia (inciso 21)
 
@@ -169,7 +169,7 @@ Ejecutar: `npm run test`
 | Inciso | Extra | Estado |
 |--------|-------|--------|
 | 6.1 | Composable `useApiRequest` (loading + error unificados) | ✅ |
-| 6.2 | Optimistic updates al transicionar estado | Pendiente |
+| 6.2 | Optimistic updates al transicionar estado | ✅ |
 | 6.3 | Atajos de teclado | Pendiente |
 | 6.4 | Modo oscuro | Pendiente |
 | 6.5 | Animaciones en el listado | Pendiente |
@@ -178,9 +178,13 @@ Ejecutar: `npm run test`
 
 Composable en `src/composables/useApiRequest.ts`: envuelve una promesa, expone `loading` y `error`, y centraliza el mensaje con `getApiErrorMessage`. El listado lo usa vía Pinia en `loadOrders`. Opción `throwOnError` para reutilizarlo en mutaciones (próximos incisos).
 
+### 6.2 — Optimistic update en transición
+
+En `transitionOrder` (Pinia): tras validar la regla, se actualiza el `estado` en memoria al instante; si el `PATCH` falla, se restaura un snapshot de la orden; si responde OK, se reemplaza con el cuerpo devuelto por la API. El detalle y el listado reflejan el cambio sin esperar la red.
+
 ## Pendientes
 
-- **Bloque 6**: incisos 6.2–6.5 (ver tabla arriba).
+- **Bloque 6**: incisos 6.3–6.5 (ver tabla arriba).
 - **Entrega**: capturas mobile/desktop en README (opcional, suma en evaluación).
 - **Fuera de alcance deliberado**: auth, roles, edición de órdenes ya creadas, backend real.
 

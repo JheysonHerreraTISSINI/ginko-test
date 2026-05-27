@@ -44,6 +44,10 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
     return orders.value.find((order) => order.id === id)
   }
 
+  function replaceOrderInList(id: string, next: PaymentOrder) {
+    orders.value = orders.value.map((order) => (order.id === id ? next : order))
+  }
+
   async function createOrder(form: CreatePaymentOrderForm) {
     const payload = buildPaymentOrder(form, orders.value)
     const created = await createPaymentOrder(payload)
@@ -60,11 +64,17 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
       throw new Error('Transición de estado no permitida')
     }
 
-    const updated = await patchPaymentOrderStatus(id, targetStatus)
-    orders.value = orders.value.map((order) =>
-      order.id === id ? updated : order,
-    )
-    return updated
+    const snapshot = { ...current }
+    replaceOrderInList(id, { ...current, estado: targetStatus })
+
+    try {
+      const updated = await patchPaymentOrderStatus(id, targetStatus)
+      replaceOrderInList(id, updated)
+      return updated
+    } catch (error) {
+      replaceOrderInList(id, snapshot)
+      throw error
+    }
   }
 
   return {

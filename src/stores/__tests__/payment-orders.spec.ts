@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { usePaymentOrdersStore } from '../payment-orders'
 import * as paymentOrdersApi from '@/api/payment-orders-api'
+import type { PaymentOrder } from '@/types/payment-order'
 
 const createdOrder = {
   id: 'ord-099',
@@ -49,7 +50,33 @@ describe('usePaymentOrdersStore', () => {
     expect(store.orders[0]?.estado).toBe('APROBADA')
   })
 
-  it('no cambia el estado local si falla el PATCH', async () => {
+  it('aplica el estado de forma optimista antes de que responda la API', async () => {
+    const draft = { ...createdOrder, estado: 'BORRADOR' as const }
+    let resolvePatch!: (value: PaymentOrder) => void
+
+    vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([draft])
+    vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus').mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePatch = resolve
+        }),
+    )
+
+    const store = usePaymentOrdersStore()
+    await store.loadOrders()
+
+    const transitionPromise = store.transitionOrder('ord-099', 'APROBADA')
+    await vi.waitFor(() => {
+      expect(store.orders[0]?.estado).toBe('APROBADA')
+    })
+
+    resolvePatch({ ...draft, estado: 'APROBADA' })
+    await transitionPromise
+
+    expect(store.orders[0]?.estado).toBe('APROBADA')
+  })
+
+  it('revierte el estado optimista si falla el PATCH', async () => {
     const draft = { ...createdOrder, estado: 'BORRADOR' as const }
 
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([draft])
