@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useApiRequest } from '@/composables/useApiRequest'
 import {
   createPaymentOrder,
   fetchPaymentOrders,
@@ -11,28 +12,32 @@ import type { TransitionTargetStatus } from '@/utils/order-status-transitions'
 import { buildPaymentOrder } from '@/utils/build-payment-order'
 import { canTransitionTo } from '@/utils/order-status-transitions'
 
+const LOAD_ORDERS_ERROR =
+  'No pudimos cargar las órdenes. Verifica que el servidor de API esté en ejecución e intenta de nuevo.'
+
 export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
   const orders = ref<PaymentOrder[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const listRequest = useApiRequest(LOAD_ORDERS_ERROR)
+
+  const loading = computed(() => listRequest.loading.value)
+  const error = computed(() => listRequest.error.value)
 
   const isEmpty = computed(
     () => !loading.value && !error.value && orders.value.length === 0,
   )
 
   async function loadOrders() {
-    loading.value = true
-    error.value = null
+    const data = await listRequest.execute(() => fetchPaymentOrders(), {
+      errorFallback: LOAD_ORDERS_ERROR,
+    })
 
-    try {
-      orders.value = await fetchPaymentOrders()
-    } catch {
-      orders.value = []
-      error.value =
-        'No pudimos cargar las órdenes. Verifica que el servidor de API esté en ejecución e intenta de nuevo.'
-    } finally {
-      loading.value = false
+    if (data) {
+      orders.value = data
+      return
     }
+
+    orders.value = []
+    listRequest.error.value = LOAD_ORDERS_ERROR
   }
 
   function getOrderById(id: string): PaymentOrder | undefined {

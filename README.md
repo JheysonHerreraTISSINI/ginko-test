@@ -113,7 +113,7 @@ Cada pieza tiene **una responsabilidad**; las vistas solo orquestan.
 | 3 | Formulario de creación | ✅ Hecho |
 | 4 | Detalle y transición de estado | ✅ Hecho |
 | 5 | Calidad transversal (tests, responsivo, documentación Pinia) | ✅ Hecho |
-| 6 | Extras opcionales | Pendiente |
+| 6 | Extras opcionales | En curso (inciso 6.1 ✅) |
 
 ## Estado local vs Pinia (inciso 21)
 
@@ -164,9 +164,23 @@ Ejecutar: `npm run test`
 - **Paginación del lado del cliente**: con 12 órdenes mock y página de 5 ítems, evita lógica extra en json-server; el composable `useClientPagination` pagina el resultado ya filtrado.
 - **Filtros en URL**: query params `estado` (omitido = todos) y `busqueda` (texto en proveedor). Ejemplo: `/?estado=BORRADOR&busqueda=logística`. La lógica AND está en `filterOrders`; la sincronización en `useOrderFilters`.
 
+## Bloque 6 — Extras (opcional)
+
+| Inciso | Extra | Estado |
+|--------|-------|--------|
+| 6.1 | Composable `useApiRequest` (loading + error unificados) | ✅ |
+| 6.2 | Optimistic updates al transicionar estado | Pendiente |
+| 6.3 | Atajos de teclado | Pendiente |
+| 6.4 | Modo oscuro | Pendiente |
+| 6.5 | Animaciones en el listado | Pendiente |
+
+### 6.1 — `useApiRequest`
+
+Composable en `src/composables/useApiRequest.ts`: envuelve una promesa, expone `loading` y `error`, y centraliza el mensaje con `getApiErrorMessage`. El listado lo usa vía Pinia en `loadOrders`. Opción `throwOnError` para reutilizarlo en mutaciones (próximos incisos).
+
 ## Pendientes
 
-- **Bloque 6 (opcional)**: composable unificado de API, optimistic updates, atajos de teclado, modo oscuro, animaciones en listado.
+- **Bloque 6**: incisos 6.2–6.5 (ver tabla arriba).
 - **Entrega**: capturas mobile/desktop en README (opcional, suma en evaluación).
 - **Fuera de alcance deliberado**: auth, roles, edición de órdenes ya creadas, backend real.
 
