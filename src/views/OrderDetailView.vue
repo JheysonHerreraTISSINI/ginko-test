@@ -53,8 +53,6 @@ async function handleTransition(targetStatus: TransitionTargetStatus) {
     ElMessage.success(transitionSuccessMessage(targetStatus))
   } catch (error) {
     transitionError.value = getApiErrorMessage(error, TRANSITION_ERROR_FALLBACK)
-  } catch {
-    ElMessage.error('No pudimos actualizar el estado. Intenta de nuevo.')
   } finally {
     isTransitioning.value = false
   }
@@ -99,7 +97,6 @@ onMounted(async () => {
         :description="transitionError"
         class="order-detail__transition-error"
       />
-
       <OrderDetailInfo :order="order" />
       <OrderStatusActions
         :status="order.estado"
@@ -134,5 +131,23 @@ onMounted(async () => {
 
 .order-detail__transition-error {
   margin-bottom: 1rem;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .order-detail {
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .order-detail {
+    max-width: 44rem;
+  }
+
+  .order-detail__header h1 {
+    font-size: 1.75rem;
+  }
 }
 </style>

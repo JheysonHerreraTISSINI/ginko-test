@@ -55,4 +55,11 @@ const actions = computed(() => getAllowedTransitions(props.status))
   flex-wrap: wrap;
   gap: 0.75rem;
 }
+
+@media (min-width: 768px) {
+  .order-status-actions__buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
 </style>

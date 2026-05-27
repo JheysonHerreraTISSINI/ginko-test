@@ -34,4 +34,14 @@ import { RouterView } from 'vue-router'
 .app-main {
   flex: 1;
 }
+
+@media (min-width: 1024px) {
+  .app-header {
+    padding: 1rem 2rem;
+  }
+
+  .app-brand {
+    font-size: 1rem;
+  }
+}
 </style>

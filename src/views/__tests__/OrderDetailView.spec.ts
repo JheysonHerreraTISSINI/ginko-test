@@ -125,7 +125,6 @@ describe('OrderDetailView', () => {
     expect(wrapper.find('.el-alert').exists()).toBe(true)
   })
 
-
   it('muestra mensaje si la orden no existe', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([])
 

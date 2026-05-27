@@ -74,13 +74,34 @@ npm run test
 
 ```
 src/
-  components/   # UI reutilizable (tabla, tarjetas, badges, etc.)
-  views/        # Páginas por ruta
-  stores/       # Pinia
-  router/       # Rutas
-  types/        # Modelos de dominio
-  api/          # Cliente HTTP (próximo bloque)
+  api/           # Cliente Axios y funciones por recurso
+  components/    # UI reutilizable (órdenes + ViewMessage)
+  composables/   # Lógica de UI reutilizable (paginación, filtros URL)
+  constants/     # Valores fijos (paginación, estados, validación)
+  stores/        # Pinia — datos compartidos entre rutas
+  types/         # Modelos TypeScript del dominio
+  utils/         # Lógica pura (filtros, transiciones, formato)
+  views/         # Páginas enlazadas al router
 ```
+
+## Componentización (inciso 20)
+
+Cada pieza tiene **una responsabilidad**; las vistas solo orquestan.
+
+| Capa | Archivo | Responsabilidad |
+|------|---------|-----------------|
+| **Vista** | `OrdersListView` | Carga listado, filtros, paginación, layout tabla/cards |
+| **Vista** | `OrderCreateView` | Formulario de alta y envío |
+| **Vista** | `OrderDetailView` | Detalle, confirmación y transición de estado |
+| **Orden** | `OrdersTable` / `OrderCard` | Presentar filas (desktop / mobile) |
+| **Orden** | `OrdersStatusFilter` / `OrdersSearchFilter` | UI de filtros (v-model hacia la vista) |
+| **Orden** | `OrdersPagination` | Paginación Element Plus |
+| **Orden** | `StatusBadge` | Color y etiqueta por `estado` |
+| **Orden** | `OrderDetailInfo` | Campos de solo lectura en detalle |
+| **Orden** | `OrderStatusActions` | Botones permitidos según reglas de dominio |
+| **UI** | `ViewMessage` | Estados loading / error / vacío reutilizables |
+| **Dominio** | `utils/filter-orders`, `order-status-transitions` | Reglas sin Vue (testeables) |
+| **Datos** | `stores/payment-orders` | Lista en memoria y mutaciones vía API |
 
 ## Plan de implementación (commits / bloques)
 
@@ -91,22 +112,63 @@ src/
 | 2 | Filtros + query params en URL | ✅ Hecho |
 | 3 | Formulario de creación | ✅ Hecho |
 | 4 | Detalle y transición de estado | ✅ Hecho |
-| 5 | Calidad transversal (tests, responsivo, documentación Pinia) | Pendiente |
+| 5 | Calidad transversal (tests, responsivo, documentación Pinia) | ✅ Hecho |
 | 6 | Extras opcionales | Pendiente |
 
-## Decisiones de diseño
+## Estado local vs Pinia (inciso 21)
 
-_Se irán completando por bloque en este README._
+**Pinia (`payment-orders`)** — datos que varias rutas necesitan y que debe persistir al navegar sin recargar:
+
+| En Pinia | Por qué |
+|----------|---------|
+| `orders` | Listado compartido: listado → detalle → volver sin nuevo GET |
+| `loading` / `error` (carga inicial) | Mismo mensaje de carga/error en el listado |
+| `loadOrders`, `createOrder`, `transitionOrder` | Mutaciones que actualizan el array en memoria |
+
+**Estado local (vista o composable)** — UI efímera o de una sola pantalla:
+
+| Local | Dónde | Por qué |
+|-------|-------|---------|
+| Página actual de paginación | `useClientPagination` en listado | No afecta otras rutas; se resetea al filtrar |
+| `statusFilter` / `searchQuery` | `useOrderFilters` + URL | Sincronizado con query params, no con otras vistas |
+| Formulario de creación | `OrderCreateView` (`reactive` + `isSubmitting`) | Solo existe en `/ordenes/nueva` |
+| Confirmación / error de transición | `OrderDetailView` (`transitionError`, `isTransitioning`) | Feedback de una acción puntual en detalle |
+| `formRef` y validación blur | `OrderCreateView` | Detalle de Element Plus, no global |
+
+Criterio usado: **si otro componente o ruta lo necesita sin prop drilling → Pinia; si es UI de una pantalla → local.**
+
+## Responsivo — tres breakpoints (inciso 22)
+
+Variables en `src/style.css`: **mobile** &lt; 768px, **tablet** ≥ 768px, **desktop** ≥ 1024px.
+
+| Vista / pieza | Mobile | Tablet (768px+) | Desktop (1024px+) |
+|---------------|--------|-----------------|-------------------|
+| Listado | Tarjetas, filtros en columna | Tabla + filtros en fila | Tipografía de título mayor |
+| Crear orden | Formulario ancho completo, botones wrap | Más padding | Título y formulario más amplios |
+| Detalle | Acciones en columna, info en una columna | Info en dos columnas (dt/dd), acciones en fila | Contenedor más ancho, título mayor |
+| Shell (`App.vue`) | Header compacto | — | Header con más aire |
+
+## Pruebas unitarias (inciso 23)
+
+El enunciado pide al menos **dos componentes significativos**; el proyecto incluye **18 archivos** de test (Vitest + Vue Test Utils), por ejemplo:
+
+- **Componentes**: `StatusBadge`, `OrdersTable`, `OrderStatusActions`, `OrderDetailInfo`, `ViewMessage`, filtros, paginación
+- **Vistas**: `OrdersListView`, `OrderCreateView`, `OrderDetailView`
+- **Dominio / store**: `filter-orders`, `order-status-transitions`, `create-order-rules`, `payment-orders`
+
+Ejecutar: `npm run test`
+
+## Decisiones de diseño
 
 - **TypeScript**: reduce errores en estados de orden y reglas de transición.
 - **Paginación del lado del cliente**: con 12 órdenes mock y página de 5 ítems, evita lógica extra en json-server; el composable `useClientPagination` pagina el resultado ya filtrado.
 - **Filtros en URL**: query params `estado` (omitido = todos) y `busqueda` (texto en proveedor). Ejemplo: `/?estado=BORRADOR&busqueda=logística`. La lógica AND está en `filterOrders`; la sincronización en `useOrderFilters`.
-- **Estado local vs Pinia**: Pinia guarda la lista cargada desde la API, `loading` y `error` (compartidos entre rutas). La página actual de paginación vive en la vista vía composable — es estado de UI que no necesita ser global.
-- **Responsivo**: tabla desde 768px (tablet/desktop), tarjetas apiladas en mobile; breakpoint desktop 1024px para tipografía.
 
 ## Pendientes
 
-Nada aún — proyecto recién inicializado.
+- **Bloque 6 (opcional)**: composable unificado de API, optimistic updates, atajos de teclado, modo oscuro, animaciones en listado.
+- **Entrega**: capturas mobile/desktop en README (opcional, suma en evaluación).
+- **Fuera de alcance deliberado**: auth, roles, edición de órdenes ya creadas, backend real.
 
 ## Autor
 

@@ -56,7 +56,7 @@ defineProps<{
   font-size: 0.9rem;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 768px) {
   .order-detail-info__row {
     grid-template-columns: 9rem 1fr;
     gap: 1rem;

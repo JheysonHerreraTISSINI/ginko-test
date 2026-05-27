@@ -140,8 +140,27 @@ async function handleSubmit() {
 
 .order-create__actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 0.5rem;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .order-create {
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .order-create__header h1 {
+    font-size: 1.75rem;
+  }
+
+  .order-create__form {
+    padding: 1.25rem;
+  }
 }
 </style>
