@@ -1,14 +1,10 @@
-# Capturas (opcional)
+# Capturas
 
-Añade aquí capturas para el README principal, por ejemplo:
+Imágenes usadas en el README principal:
 
-- `listado-desktop.png` — tabla con filtros  
-- `listado-mobile.png` — tarjetas  
-- `crear-orden.png` — formulario  
-- `detalle-transicion.png` — detalle con acciones de estado  
-
-En el README raíz puedes enlazarlas así:
-
-```markdown
-![Listado desktop](./docs/screenshots/listado-desktop.png)
-```
+| Archivo | Vista |
+|---------|--------|
+| `listado-desktop.png` | Listado con tabla y filtros |
+| `listado-mobile.png` | Listado en tarjetas (mobile) |
+| `crear-orden.png` | Formulario de creación |
+| `detalle-transicion.png` | Detalle y acciones de estado |

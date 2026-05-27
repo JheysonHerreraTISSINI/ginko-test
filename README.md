@@ -164,9 +164,23 @@ Más de **dos componentes** exigidos por el enunciado: **18 archivos** de test, 
 6. Detener `npm run api` y confirmar transición → mensaje de error; estado no cambia.  
 7. Redimensionar ventana: cards (móvil) vs tabla (≥768px).
 
-## Capturas (opcional)
+## Capturas de pantalla
 
-Puedes añadir en `docs/screenshots/` imágenes del listado (desktop/mobile), formulario y detalle, y enlazarlas aquí antes de enviar el correo.
+### Listado — desktop (tabla y filtros)
+
+![Listado de órdenes en escritorio](docs/screenshots/listado-desktop.png)
+
+### Listado — mobile (tarjetas)
+
+![Listado de órdenes en móvil](docs/screenshots/listado-mobile.png)
+
+### Crear orden
+
+![Formulario de nueva orden de pago](docs/screenshots/crear-orden.png)
+
+### Detalle y transición de estado
+
+![Vista de detalle con acciones de cambio de estado](docs/screenshots/detalle-transicion.png)
 
 ## Pendientes
 
