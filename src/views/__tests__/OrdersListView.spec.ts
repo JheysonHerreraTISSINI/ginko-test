@@ -4,6 +4,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import OrdersListView from '../OrdersListView.vue'
+import OrderDetailView from '../OrderDetailView.vue'
 import * as paymentOrdersApi from '@/api/payment-orders-api'
 import type { PaymentOrder } from '@/types/payment-order'
 
@@ -35,15 +36,18 @@ async function mountWithRouter(initialPath = '/') {
     routes: [
       { path: '/', name: 'orders-list', component: OrdersListView },
       { path: '/ordenes/nueva', name: 'order-create', component: { template: '<div />' } },
+      { path: '/ordenes/:id', name: 'order-detail', component: OrderDetailView },
     ],
   })
 
   await router.push(initialPath)
   await router.isReady()
 
-  return mount(OrdersListView, {
+  const wrapper = mount(OrdersListView, {
     global: { plugins: [pinia, router] },
   })
+
+  return { wrapper, router }
 }
 
 describe('OrdersListView', () => {
@@ -61,7 +65,7 @@ describe('OrdersListView', () => {
         }),
     )
 
-    const wrapper = await mountWithRouter()
+    const { wrapper } = await mountWithRouter()
     await nextTick()
     expect(wrapper.text()).toContain('Cargando órdenes')
 
@@ -75,7 +79,7 @@ describe('OrdersListView', () => {
   it('filtra por nombre de proveedor', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue(mockOrders)
 
-    const wrapper = await mountWithRouter()
+    const { wrapper } = await mountWithRouter()
     await flushPromises()
 
     const searchInput = wrapper.find('.search-filter__input input')
@@ -89,17 +93,31 @@ describe('OrdersListView', () => {
   it('lee filtros desde la URL al cargar', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue(mockOrders)
 
-    const wrapper = await mountWithRouter('/?estado=APROBADA&busqueda=Otro')
+    const { wrapper } = await mountWithRouter('/?estado=APROBADA&busqueda=Otro')
     await flushPromises()
 
     expect(wrapper.text()).toContain('Otro Proveedor')
     expect(wrapper.text()).not.toContain('Proveedor Test')
   })
 
+  it('navega al detalle al hacer clic en una fila de la tabla', async () => {
+    vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue(mockOrders)
+
+    const { wrapper, router } = await mountWithRouter()
+    await flushPromises()
+
+    const row = wrapper.findAll('.el-table__row').find((r) => r.text().includes('Proveedor Test'))
+    await row?.trigger('click')
+    await flushPromises()
+
+    expect(router.currentRoute.value.name).toBe('order-detail')
+    expect(router.currentRoute.value.params.id).toBe('ord-001')
+  })
+
   it('muestra mensaje de error cuando falla la API', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockRejectedValue(new Error('fail'))
 
-    const wrapper = await mountWithRouter()
+    const { wrapper } = await mountWithRouter()
     await flushPromises()
 
     expect(wrapper.text()).toContain('No pudimos cargar las órdenes')

@@ -5,11 +5,20 @@ import OrderCard from './OrderCard.vue'
 defineProps<{
   orders: PaymentOrder[]
 }>()
+
+const emit = defineEmits<{
+  selectOrder: [orderId: string]
+}>()
 </script>
 
 <template>
   <div class="orders-cards">
-    <OrderCard v-for="order in orders" :key="order.id" :order="order" />
+    <OrderCard
+      v-for="order in orders"
+      :key="order.id"
+      :order="order"
+      @select="emit('selectOrder', $event)"
+    />
   </div>
 </template>
 

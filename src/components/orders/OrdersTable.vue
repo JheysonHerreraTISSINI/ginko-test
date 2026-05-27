@@ -6,10 +6,23 @@ import StatusBadge from './StatusBadge.vue'
 defineProps<{
   orders: PaymentOrder[]
 }>()
+
+const emit = defineEmits<{
+  selectOrder: [orderId: string]
+}>()
+
+function handleRowClick(row: PaymentOrder) {
+  emit('selectOrder', row.id)
+}
 </script>
 
 <template>
-  <el-table :data="orders" stripe class="orders-table">
+  <el-table
+    :data="orders"
+    stripe
+    class="orders-table"
+    @row-click="handleRowClick"
+  >
     <el-table-column prop="id" label="ID" width="110" />
     <el-table-column prop="proveedor" label="Proveedor" min-width="160" />
     <el-table-column label="Monto" min-width="130">
@@ -34,5 +47,9 @@ defineProps<{
 <style scoped>
 .orders-table {
   width: 100%;
+}
+
+.orders-table :deep(.el-table__row) {
+  cursor: pointer;
 }
 </style>

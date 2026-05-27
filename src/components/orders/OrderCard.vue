@@ -6,10 +6,20 @@ import StatusBadge from './StatusBadge.vue'
 defineProps<{
   order: PaymentOrder
 }>()
+
+const emit = defineEmits<{
+  select: [orderId: string]
+}>()
 </script>
 
 <template>
-  <article class="order-card">
+  <article
+    class="order-card order-card--clickable"
+    role="button"
+    tabindex="0"
+    @click="emit('select', order.id)"
+    @keydown.enter="emit('select', order.id)"
+  >
     <header class="order-card__header">
       <h3 class="order-card__provider">{{ order.proveedor }}</h3>
       <StatusBadge :status="order.estado" />
@@ -41,6 +51,20 @@ defineProps<{
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
+}
+
+.order-card--clickable {
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.order-card--clickable:hover {
+  border-color: #93c5fd;
+}
+
+.order-card--clickable:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
 .order-card__header {

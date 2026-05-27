@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import OrdersCards from '@/components/orders/OrdersCards.vue'
@@ -15,6 +15,7 @@ import { useOrderFilters } from '@/composables/useOrderFilters'
 import { usePaymentOrdersStore } from '@/stores/payment-orders'
 import { filterOrders } from '@/utils/filter-orders'
 
+const router = useRouter()
 const store = usePaymentOrdersStore()
 const { orders, loading, error, isEmpty } = storeToRefs(store)
 
@@ -52,6 +53,10 @@ watch(statusFilter, () => {
 watch(searchQuery, () => {
   resetPage()
 })
+
+function goToOrderDetail(orderId: string) {
+  router.push({ name: 'order-detail', params: { id: orderId } })
+}
 </script>
 
 <template>
@@ -105,10 +110,10 @@ watch(searchQuery, () => {
 
       <template v-else>
         <div class="orders-list__desktop">
-          <OrdersTable :orders="paginatedItems" />
+          <OrdersTable :orders="paginatedItems" @select-order="goToOrderDetail" />
         </div>
         <div class="orders-list__mobile">
-          <OrdersCards :orders="paginatedItems" />
+          <OrdersCards :orders="paginatedItems" @select-order="goToOrderDetail" />
         </div>
 
         <OrdersPagination

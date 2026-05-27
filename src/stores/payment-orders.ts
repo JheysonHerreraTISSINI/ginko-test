@@ -29,6 +29,10 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
     }
   }
 
+  function getOrderById(id: string): PaymentOrder | undefined {
+    return orders.value.find((order) => order.id === id)
+  }
+
   async function createOrder(form: CreatePaymentOrderForm) {
     const payload = buildPaymentOrder(form, orders.value)
     const created = await createPaymentOrder(payload)
@@ -42,6 +46,7 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
     error,
     isEmpty,
     loadOrders,
+    getOrderById,
     createOrder,
   }
 })
