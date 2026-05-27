@@ -1,4 +1,4 @@
-import type { PaymentOrder } from '@/types/payment-order'
+import type { PaymentOrder, PaymentOrderStatus } from '@/types/payment-order'
 import { apiClient } from './client'
 
 export async function fetchPaymentOrders(): Promise<PaymentOrder[]> {
@@ -8,5 +8,13 @@ export async function fetchPaymentOrders(): Promise<PaymentOrder[]> {
 
 export async function createPaymentOrder(order: PaymentOrder): Promise<PaymentOrder> {
   const { data } = await apiClient.post<PaymentOrder>('/ordenes', order)
+  return data
+}
+
+export async function patchPaymentOrderStatus(
+  id: string,
+  estado: PaymentOrderStatus,
+): Promise<PaymentOrder> {
+  const { data } = await apiClient.patch<PaymentOrder>(`/ordenes/${id}`, { estado })
   return data
 }

@@ -61,6 +61,33 @@ describe('OrderDetailView', () => {
     expect(text).toContain('Borrador')
   })
 
+  it('muestra acciones de transición según el estado actual', async () => {
+    const { wrapper } = await mountView()
+    expect(wrapper.text()).toContain('Aprobar orden')
+    expect(wrapper.text()).toContain('Rechazar orden')
+    expect(wrapper.text()).not.toContain('Marcar como pagada')
+  })
+
+  it('actualiza el estado al usar una acción permitida', async () => {
+    vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus').mockResolvedValue({
+      ...mockOrder,
+      estado: 'APROBADA',
+    })
+
+    const { wrapper } = await mountView()
+    const approveBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Aprobar orden'))
+    await approveBtn?.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Aprobada')
+    expect(paymentOrdersApi.patchPaymentOrderStatus).toHaveBeenCalledWith(
+      'ord-001',
+      'APROBADA',
+    )
+  })
+
   it('muestra mensaje si la orden no existe', async () => {
     vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([])
 

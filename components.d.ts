@@ -31,6 +31,7 @@ declare module 'vue' {
     OrdersSearchFilter: typeof import('./src/components/orders/OrdersSearchFilter.vue')['default']
     OrdersStatusFilter: typeof import('./src/components/orders/OrdersStatusFilter.vue')['default']
     OrdersTable: typeof import('./src/components/orders/OrdersTable.vue')['default']
+    OrderStatusActions: typeof import('./src/components/orders/OrderStatusActions.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StatusBadge: typeof import('./src/components/orders/StatusBadge.vue')['default']

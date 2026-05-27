@@ -34,4 +34,18 @@ describe('usePaymentOrdersStore', () => {
     expect(store.orders[0]).toEqual(createdOrder)
     expect(store.orders).toHaveLength(1)
   })
+
+  it('transiciona el estado de una orden existente', async () => {
+    const draft = { ...createdOrder, estado: 'BORRADOR' as const }
+    const approved = { ...draft, estado: 'APROBADA' as const }
+
+    vi.spyOn(paymentOrdersApi, 'fetchPaymentOrders').mockResolvedValue([draft])
+    vi.spyOn(paymentOrdersApi, 'patchPaymentOrderStatus').mockResolvedValue(approved)
+
+    const store = usePaymentOrdersStore()
+    await store.loadOrders()
+    await store.transitionOrder('ord-099', 'APROBADA')
+
+    expect(store.orders[0]?.estado).toBe('APROBADA')
+  })
 })

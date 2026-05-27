@@ -1,9 +1,15 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { createPaymentOrder, fetchPaymentOrders } from '@/api/payment-orders-api'
+import {
+  createPaymentOrder,
+  fetchPaymentOrders,
+  patchPaymentOrderStatus,
+} from '@/api/payment-orders-api'
 import type { CreatePaymentOrderForm } from '@/types/create-payment-order'
 import type { PaymentOrder } from '@/types/payment-order'
+import type { TransitionTargetStatus } from '@/utils/order-status-transitions'
 import { buildPaymentOrder } from '@/utils/build-payment-order'
+import { canTransitionTo } from '@/utils/order-status-transitions'
 
 export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
   const orders = ref<PaymentOrder[]>([])
@@ -40,6 +46,22 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
     return created
   }
 
+  async function transitionOrder(id: string, targetStatus: TransitionTargetStatus) {
+    const current = getOrderById(id)
+    if (!current) {
+      throw new Error('Orden no encontrada')
+    }
+    if (!canTransitionTo(current.estado, targetStatus)) {
+      throw new Error('Transición de estado no permitida')
+    }
+
+    const updated = await patchPaymentOrderStatus(id, targetStatus)
+    orders.value = orders.value.map((order) =>
+      order.id === id ? updated : order,
+    )
+    return updated
+  }
+
   return {
     orders,
     loading,
@@ -48,5 +70,6 @@ export const usePaymentOrdersStore = defineStore('paymentOrders', () => {
     loadOrders,
     getOrderById,
     createOrder,
+    transitionOrder,
   }
 })

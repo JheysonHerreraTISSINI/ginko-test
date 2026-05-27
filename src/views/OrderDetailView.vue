@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import OrderDetailInfo from '@/components/orders/OrderDetailInfo.vue'
+import OrderStatusActions from '@/components/orders/OrderStatusActions.vue'
 import ViewMessage from '@/components/ui/ViewMessage.vue'
 import { usePaymentOrdersStore } from '@/stores/payment-orders'
+import {
+  transitionSuccessMessage,
+  type TransitionTargetStatus,
+} from '@/utils/order-status-transitions'
 
 const route = useRoute()
 const store = usePaymentOrdersStore()
@@ -16,6 +22,22 @@ const order = computed(() => store.getOrderById(orderId.value))
 
 const showLoading = computed(() => loading.value && !order.value)
 const showNotFound = computed(() => !loading.value && !order.value)
+const isTransitioning = ref(false)
+
+async function handleTransition(targetStatus: TransitionTargetStatus) {
+  if (!order.value) return
+
+  isTransitioning.value = true
+  try {
+    await store.transitionOrder(orderId.value, targetStatus)
+    ElMessage.success(transitionSuccessMessage(targetStatus))
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('No pudimos actualizar el estado. Intenta de nuevo.')
+  } finally {
+    isTransitioning.value = false
+  }
+}
 
 onMounted(async () => {
   if (!order.value && orders.value.length === 0) {
@@ -48,7 +70,14 @@ onMounted(async () => {
       description="No existe una orden con ese identificador en el listado actual."
     />
 
-    <OrderDetailInfo v-else-if="order" :order="order" />
+    <template v-else-if="order">
+      <OrderDetailInfo :order="order" />
+      <OrderStatusActions
+        :status="order.estado"
+        :disabled="isTransitioning"
+        @transition="handleTransition"
+      />
+    </template>
   </section>
 </template>
 
